@@ -131,7 +131,7 @@ func (client *HTTPClient) requestWithoutBody(method, fullURL, host, cookie strin
 		if resp.ContentLength <= 0 {
 			body, err2 := ioutil.ReadAll(resp.Body)
 			if err2 == nil {
-				*length = int64(utf8.RuneCountInString(string(body)))
+				*length = int64(utf8.RuneCount(body))
 			}
 		} else {
 			*length = resp.ContentLength

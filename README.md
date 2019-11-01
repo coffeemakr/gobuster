@@ -103,6 +103,7 @@ Flags:
   -n, --nostatus                      Don't print status codes
   -P, --password string               Password for Basic Auth
   -p, --proxy string                  Proxy to use for requests [http(s)://host:port]
+      --regex string                  Match response body against regex in addition to status codes.
   -s, --statuscodes string            Positive status codes (will be overwritten with statuscodesblacklist if set) (default "200,204,301,302,307,401,403")
   -b, --statuscodesblacklist string   Negative status codes (will override statuscodes if set)
       --timeout duration              HTTP Timeout (default 10s)

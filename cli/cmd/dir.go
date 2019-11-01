@@ -3,12 +3,14 @@ package cmd
 import (
 	"fmt"
 	"log"
+	"regexp"
 
 	"github.com/OJ/gobuster/v3/cli"
 	"github.com/OJ/gobuster/v3/gobusterdir"
 	"github.com/OJ/gobuster/v3/helper"
 	"github.com/OJ/gobuster/v3/libgobuster"
 	"github.com/spf13/cobra"
+	flag "github.com/spf13/pflag"
 )
 
 var cmdDir *cobra.Command
@@ -31,6 +33,18 @@ func runDir(cmd *cobra.Command, args []string) error {
 		return fmt.Errorf("error on running gobuster: %v", err)
 	}
 	return nil
+}
+
+// GetRegex return the string value of a flag with the given name parsed a regular expression
+func getRegex(flags *flag.FlagSet, name string) (*regexp.Regexp, error) {
+	val, err := flags.GetString(name)
+	if err != nil {
+		return nil, err
+	}
+	if val == "" {
+		return nil, nil
+	}
+	return regexp.Compile(val)
 }
 
 func parseDirOptions() (*libgobuster.Options, *gobusterdir.OptionsDir, error) {
@@ -119,6 +133,10 @@ func parseDirOptions() (*libgobuster.Options, *gobusterdir.OptionsDir, error) {
 		return nil, nil, fmt.Errorf("invalid value for wildcard: %v", err)
 	}
 
+	plugin.ContentRegex, err = getRegex(cmdDir.Flags(), "regex")
+	if err != nil {
+		return nil, nil, fmt.Errorf("invalid value for regex: %v", err)
+	}
 	return globalopts, plugin, nil
 }
 
@@ -140,6 +158,7 @@ func init() {
 	cmdDir.Flags().BoolP("includelength", "l", false, "Include the length of the body in the output")
 	cmdDir.Flags().BoolP("addslash", "f", false, "Append / to each request")
 	cmdDir.Flags().BoolP("wildcard", "", false, "Force continued operation when wildcard found")
+	cmdDir.Flags().StringP("regex", "", "", "Match response body against regex in addition to status codes.")
 
 	cmdDir.PersistentPreRun = func(cmd *cobra.Command, args []string) {
 		configureGlobalOptions()

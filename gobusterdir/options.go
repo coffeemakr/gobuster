@@ -1,6 +1,8 @@
 package gobusterdir
 
 import (
+	"regexp"
+
 	"github.com/OJ/gobuster/v3/libgobuster"
 )
 
@@ -18,6 +20,7 @@ type OptionsDir struct {
 	IncludeLength              bool
 	Expanded                   bool
 	NoStatus                   bool
+	ContentRegex               *regexp.Regexp
 }
 
 // NewOptionsDir returns a new initialized OptionsDir
